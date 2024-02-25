@@ -40,6 +40,7 @@ class VerbPdf(FPDF):
                         [13, 5, "N. ord/"], [23, 5, "N. ro Matr. /"], [17,5, "N. riord./"], [6, 5, ""], [22, 5, "N. ro causali"]]
        
         self.set_font(style="B")
+        self.set_line_width(0.50)
         for i in intestazione:
             w = i[0]
             h = i[1]
@@ -47,6 +48,7 @@ class VerbPdf(FPDF):
             self.cell(w=w, h=h, text=t, border=True)
         self.set_y(self.get_y() + 5)
         self.set_font(style="")
+        self.set_line_width(0)
 
         #memorizza posizione inizio tabella di ogni pagina
         xPos = self.get_x()
@@ -56,7 +58,7 @@ class VerbPdf(FPDF):
         for m in range(matr_i, matr_f +1):
             
             if (m - matr_i) == 25:
-                #salta a tabella di sinistra per il secondo lotto da 25 matricole
+                #salta a tabella di destra per il secondo lotto da 25 matricole
                 self.set_xy(xPos + 90.0, yPos)
                 co = "\t"
             self.cell(w=13, h=5, border=True, text=str(m - matr_i +1), align="R")
@@ -74,7 +76,7 @@ class VerbPdf(FPDF):
         for m in range(matr_f - matr_i + 1, resto + matr_f - matr_i + 1,):
           
             if m == 25:
-                #salta a tabella di sinistra per il secondo lotto da 25 celle vuote
+                #salta a tabella di destra per il secondo lotto da 25 celle vuote
                 self.set_xy(xPos + 90.0, yPos)
             
             self.cell(w=13, h=5, border=True, text=str(m), align="R")
@@ -86,9 +88,14 @@ class VerbPdf(FPDF):
             self.cell(w=9, h=5, border=False, text="", new_x=XPos.LEFT, new_y=YPos.NEXT)
             #posiziona cursore per nuova riga
             self.set_x(self.get_x() - 81)
-
+        
+        #incrementa spessore bordo esterno della tabella
+        self.set_xy(xPos, self.get_y() - 130)
+        self.set_line_width(0.50)
+        self.cell(w=171, h=130, text="", border=True)
         self.ln(1)   
         self.set_font_size(12) 
+        self.set_line_width(0)
 
     #metodo privato per generare il verbale completo, in pdf
     def __genera_pdf(self, provvedimento, azienda, descrizione, data, delegato, matr_i, matr_f, logotipo):
