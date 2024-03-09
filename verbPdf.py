@@ -1,5 +1,6 @@
 from fpdf import FPDF, XPos, YPos
 from schedaVerbale import Scheda
+from tkinter import messagebox
 
 class VerbPdf(FPDF):
 
@@ -192,5 +193,12 @@ class VerbPdf(FPDF):
 
     #metodo privato per salvataggio pdf completo e finito              
     def __save_pdf(self, data):
-        nomeFile = f"verbale_{data.strftime('%d_%m_%Y-%H_%M')}.pdf"
-        self.output(f"output/{nomeFile}")
+
+        try:
+
+            nomeFile = f"verbale_{data.strftime('%d_%m_%Y-%H_%M')}.pdf"
+            self.output(f"output/{nomeFile}")
+
+        except FileNotFoundError as e:
+            print (f"errore: {e.strerror}: {e.filename}")
+            messagebox.showerror(title="ERRORE", message=f"errore: {e.strerror}: {e.filename}")

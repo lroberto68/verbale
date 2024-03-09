@@ -1,6 +1,7 @@
 from verbPdf import VerbPdf
 from schedaVerbale import Scheda
 from datetime import datetime as dt 
+from dbConnect import DbConnect as db
 import csv
 
 if __name__ == "__main__":
@@ -12,3 +13,9 @@ if __name__ == "__main__":
             modelli.append(Scheda(d[0],d[1], d[2], int(d[3]), int(d[4]), d[5], d[6], d[7]))
 
     pdf = VerbPdf(scheda=modelli, data=dt.now())
+
+    """dtB = db("data/verbali.db")
+    dtB.ApriConnessione()
+    dtB.LeggiVersione()
+    dtB.CreaTabelle()
+    dtB.ChiudiConnessione() """
