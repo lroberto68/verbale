@@ -2,14 +2,17 @@
 
 class Scheda():
 
-    def __init__(self, codice, descrizione, logotipo, matricola, qty, provvedimento, azienda, delegato):
+    def __init__(self, codice, descrizione, logotipo, matricola, qty, descProv, dataProv, varProv, dataVar, azienda, delegato):
         
         self.__codice = codice
         self.__descrizione = descrizione
         self.__logotipo = logotipo
         self.__matricola = matricola
         self.__qty = qty
-        self.__provvedimento = provvedimento
+        if varProv == "":
+            self.__provvedimento = f"{descProv} del {dataProv}"
+        else:
+            self.__provvedimento = f"{descProv} del {dataProv} Var. {varProv} del {dataVar}"
         self.__azienda = azienda
         self.__delegato = delegato
 

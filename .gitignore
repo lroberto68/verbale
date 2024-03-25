@@ -1,4 +1,10 @@
 __pycache__/
 output/
 data/elenco__.csv
+data/list_ecr_202403122223.csv
+data/logotipo_202403122217.csv
+data/aziende_20240318.csv
+data/delegati_20240319.csv
+data/provvedimenti_20240319.csv
+data/elencoPunz.csv
 venv/
