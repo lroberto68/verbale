@@ -8,19 +8,22 @@ class DbConnect():
 
         self.__db = pathDb
         
-
+    #Metodo pubblico per aprire la connessione al Db
     def ApriConnessione(self):
         
         try:            
             self.__connection = sqlite3.connect(self.__db)
             print ("connessione aperta")
             self.__cursor = self.__connection.cursor()
+            
+            #Attiva foreign keys
             self.__connection.execute("PRAGMA foreign_keys = ON")
         
         except sqlite3.Error as e:
             print (f"Abbiamo quest' errore {e}")
             print ("Connessione non aperta")
 
+    #Metodo pubblico per la chiusura della connessione al Db
     def ChiudiConnessione(self):
 
         self.__connection.close()
@@ -38,6 +41,7 @@ class DbConnect():
             print (f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
 
+    #Metodo pubblico per la creazione delle tabelle ed inserimento dati di default nel Db a mezzo file script
     def CreaTabelle(self):
 
         try:
@@ -54,13 +58,16 @@ class DbConnect():
         except sqlite3.Error as e:
             print (f"Abbiamo quest' errore {sqlite3.Error}")
 
+    #Metodo privato per generazione ed inserimento della lista di tuple nella tabella del Db
     def __InserimentoDati(self, pathCsvFile, query):
         
         try:
             with open(file=pathCsvFile, mode="r") as f:
                 reader = csv.reader(f)
             
+                #Converte in integer il valore che contiene solo cifre numeriche
                 output = list(tuple(int(x) if x.isdigit() else x for x in line) for line in reader)
+                #Elimina la tupla contenente le intestazioni dalla lista
                 output = output[1:]
 
             print (output)
@@ -73,35 +80,41 @@ class DbConnect():
 
         except sqlite3.Error as e:    
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
-
+    
+    #Metodo pubblico per inserire i dati della tabella Logotipo
     def CaricaLogotipo(self):
         pathCsvFile = "data/logotipo_202403122217.csv"
         query = '''INSERT INTO Logotipo(IdLog, Logotipo, UltimaMatricola, Cifre, CifreSottassieme,  FlagAnno)
                     VALUES (?,?,?,?,?,?)'''
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
+    #Metodo pubblico per inserire i dati della tabella Azienda
     def CaricaAziende(self):
         pathCsvFile = "data/aziende_20240318.csv"
         query = "INSERT INTO Azienda(IdAzi, DescAzienda) VALUES (?, ?)"
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
+    #Metodo pubblico per inserire i dati della tabella Delegato
     def CaricaDelegati(self):
         pathCsvFile = "data/delegati_20240319.csv"
         query = "INSERT INTO Delegato(IdDeleg, Nome, Cognome, IdAzi) VALUES (?, ?, ?, ?)"
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
+    #Metodo pubblico per inserire i dati della tabella Provvedimento
     def CaricaProvvedimenti(self):
         pathCsvFile = "data/provvedimenti_20240319.csv"
         query = "INSERT INTO Provvedimento(IdProv, DescProvvedimento, DataProv, VarProvvedimento, \
             DataVariante, IdAzi) VALUES (?, ?, ?, ?, ?, ?)"
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
+    #Metodo pubblico per inserire i dati della tabella Ecr
     def CaricaEcr(self):
         pathCsvFile = "data/list_ecr_202403122223.csv"
         query ="INSERT INTO Ecr(IdEcr, CodEcr, DescEcr, IdLogotipo, \
             IdProvv, StatusRec) VALUES (?, ?, ?, ?, ?, ?)"
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
+    #Metodo pubblico per generare lista record dei modelli da verbalizzare
     def SelectModelli(self, codEcr):
         try:
             query = f'''SELECT Ecr.CodEcr,
@@ -137,6 +150,7 @@ class DbConnect():
         except sqlite3.Error as e:    
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
 
+    #Metodo pubblico per inserire record dei modelli verbalizzati nella tabella Scheda
     def InserScheda (self, task):
         try:
 
@@ -150,6 +164,7 @@ class DbConnect():
         except sqlite3.Error as e:    
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")     
 
+    #Metodo pubblico per aggiornare il record della tabella Logotipo
     def UpdateMatricola (self, task):
         try:
     
