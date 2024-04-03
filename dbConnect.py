@@ -145,7 +145,9 @@ class DbConnect():
                     Delegato.IdAzi = Azienda.IdAzi;'''
             
             dati =self.__connection.execute(query)
-            return dati
+            number = len(self.__connection.execute(query).fetchall())
+            #Ritorna il cursore con i record ed il numero di record (zero record che il cursore è vuoto)
+            return dati, number
         
         except sqlite3.Error as e:    
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
