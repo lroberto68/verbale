@@ -1,4 +1,3 @@
-from tkinter import Tk
 import tkinter as tk
 from tkinter import ttk
 from dbConnect import DbConnect as db
@@ -6,11 +5,11 @@ from schedaVerbale import Scheda
 from datetime import datetime as dt 
 from verbPdf import VerbPdf
 
-class MainWindow(Tk):
+class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.__layout3()
-        self.__dtB = db('data/verbali.db')
+        self.__layout4()
+        #self.__dtB = db('data/verbali.db')
         
     
     def __layout(self):
@@ -109,4 +108,69 @@ class MainWindow(Tk):
         else:
             print ("Verbale non creato")
         self.__dtB.ChiudiConnessione()
+
+    def __button3Func1(self):
+        print (self.__testo.get())
+        self.__testo.set("Button pressed")
+        print (f"Valore radio button: {self.__radioVar.get()}")
+
+    def __radioFunc(self):
+        print (f"Valore checkbutton: {self.__check3Var.get()}")
+        self.__check3Var.set(False)
+
+    def __layout4(self):
+
+        #window
+        self.title("Tkinter variables")
+        self.geometry("600x400")
+
+        #tkinter variables
+        self.__testo = tk.StringVar(value="Start Value")
+    
+        #widgets
+        self.label1 = ttk.Label(master=self, textvariable=self.__testo)
+        self.label1.pack()
+
+        self.entry1 = ttk.Entry(master=self, textvariable= self.__testo)
+        self.entry1.pack()
+
+        self.button1 = ttk.Button(master=self, text='Button', command=self.__button3Func1)
+        self.button1.pack()
+
+        self.__button2String = tk.StringVar(value = "A basic button")
+        self.button2 = ttk.Button(master=self, text= 'A button', command=lambda: print(self.__button2String.get()), textvariable=self.__button2String)
+        self.button2.pack()
+
+        #self.__check1Value = tk.StringVar(value="1")
+        self.__check1Value = tk.BooleanVar(value=True)
+        self.check1 = ttk.Checkbutton(master=self, text="Check1", 
+                                      command=lambda: print(self.__check1Value.get()), 
+                                      variable=self.__check1Value)
+        self.check1.pack()
+
+        self.__radioVar = tk.StringVar(value=2)
+        self.radio1 = ttk.Radiobutton(master=self, text="Radio1", 
+                                        value="Radio 1", variable= self.__radioVar, 
+                                        command=lambda: print(self.__radioVar.get()))
+        self.radio1.pack()
+
+        self.radio2 = ttk.Radiobutton(master=self, text="Radio2", 
+                                      value=2, variable=self.__radioVar,
+                                      command=lambda: print(self.__radioVar.get()))
+        self.radio2.pack()
+
+        self.__check3Var = tk.BooleanVar(value=True)
+        self.check3 = ttk.Checkbutton(master=self, text="Check3", variable= self.__check3Var, command=lambda:print(f"Valore radiobutton: {self.__radio34Var.get()}"))
+        self.check3.pack()
+
+        self.__radio34Var = tk.StringVar(value="A")
+        self.radio3 = tk.Radiobutton(master=self, text="A", 
+                                     value="A", variable=self.__radio34Var,
+                                     command= self.__radioFunc)
         
+
+        self.radio4 = tk.Radiobutton(master=self, text="B", 
+                                     value="B", variable=self.__radio34Var, 
+                                     command=self.__radioFunc)
+        self.radio3.pack()
+        self.radio4.pack()
