@@ -8,7 +8,7 @@ from verbPdf import VerbPdf
 class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.__layout4()
+        self.__layout5()
         #self.__dtB = db('data/verbali.db')
         
     
@@ -174,3 +174,33 @@ class MainWindow(tk.Tk):
                                      command=self.__radioFunc)
         self.radio3.pack()
         self.radio4.pack()
+
+        items = ['ice cream', 'pizza', 'broccoli']
+        self.__cmbVar = tk.StringVar(value=items[0])
+        self.combo = ttk.Combobox(master=self, textvariable=self.__cmbVar)
+        self.combo['values'] = items
+        self.combo.pack()
+
+        self.combo.bind('<<ComboboxSelected>>', lambda event: print(f"Selected: {self.__cmbVar.get()}"))
+
+        self.button2.bind('<Motion>', lambda event: print(f"x: {event.x} - y: {event.y}"))
+
+    def __layout5(self):
+
+        #window
+        self.title("Treeview test")
+        self.geometry("800x400")
+
+        #data
+        
+
+        #treeview
+        self.treeview = ttk.Treeview(master=self, columns=('First', 'Last', 'Email'), show='headings')
+        self.treeview.heading(column='First', text='First Name')
+        self.treeview.heading(column='Last', text='Last Name')
+        self.treeview.heading(column='Email', text='Email Adreess')
+        self.treeview.pack()
+
+        #listbox
+        self.lstbox = tk.Listbox(master=self)
+        self.lstbox.pack()

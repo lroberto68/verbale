@@ -29,9 +29,10 @@ def mainFromFile (pathCsvFile):
                         dtB.InserScheda((r[13], int(r[3]) + 1, int(r[3]) + int(d[1]), r[14], dt.now()))
                         dtB.UpdateMatricola((int(r[3]) + int(d[1]), r[15]))
 
-            if number > 0:
+            if len(modelli) > 0:
                 pdf = VerbPdf(scheda=modelli, data=dt.now())
             else:
+                #Nessun modello individuato e quindi verbale vuoto
                 print("Verbale non creato")
         
         dtB.ChiudiConnessione()
