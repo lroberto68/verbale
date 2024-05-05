@@ -1,15 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
 from dbConnect import DbConnect as db
-from schedaVerbale import Scheda
+from schedaVerbale import Scheda, SchedaEcr
 from datetime import datetime as dt 
 from verbPdf import VerbPdf
 
 class MainWindow(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.__layout5()
-        #self.__dtB = db('data/verbali.db')
+        self.__test1()
+        self.__dtB = db('data/verbali.db')
         
     
     def __layout(self):
@@ -103,7 +103,7 @@ class MainWindow(tk.Tk):
             self.__modelli.append(Scheda(r[0],r[1], r[2], int(r[3]) + 1, int(self.entry2.get()), r[4], r[5], r[6], r[7], r[8], f"{r[9]} {r[10]}"))
             self.__dtB.InserScheda((r[13], int(r[3]) + 1, int(r[3]) + int(self.entry2.get()), r[14], dt.now()))
             self.__dtB.UpdateMatricola((int(r[3]) + int(self.entry2.get()), r[15]))
-        if number > 0:
+        if len(self.__modelli) > 0:
             pdf = VerbPdf(scheda=self.__modelli, data=dt.now())
         else:
             print ("Verbale non creato")
@@ -186,21 +186,102 @@ class MainWindow(tk.Tk):
         self.button2.bind('<Motion>', lambda event: print(f"x: {event.x} - y: {event.y}"))
 
     def __layout5(self):
+        from random import choice
 
         #window
         self.title("Treeview test")
-        self.geometry("800x400")
+        self.geometry("600x400")
 
         #data
-        
+        first_names = ['Bob', 'Maria', 'Alex', 'James', 'Susan', 'Henry', 'Lisa', 'Anna', 'Lisa']   
+        last_names = ['Smith', 'Brown', 'Wilson', 'Thomson', 'Cook', 'Taylor', 'Walker', 'Clark']
 
         #treeview
-        self.treeview = ttk.Treeview(master=self, columns=('First', 'Last', 'Email'), show='headings')
+        self.treeview = ttk.Treeview(master=self, columns=('First', 'Last', 'Email'), show='headings', selectmode='browse')
         self.treeview.heading(column='First', text='First Name')
         self.treeview.heading(column='Last', text='Last Name')
         self.treeview.heading(column='Email', text='Email Adreess')
-        self.treeview.pack()
+        self.treeview.pack(fill='both', expand=True)
+
+        #insert data
+        for i in range(100):
+            first = choice(first_names)
+            last = choice(last_names)
+            email = f"{first[0]}{last}_{i}@email.com".lower()
+            data = (first, last, email)
+            self.treeview.insert(parent='', index=0, values=data)
+
+        #event
+        def itemSelect(_):
+            for i in self.treeview.selection():
+                print(self.treeview.item(i))
+
+        def itemDelete(event):
+            for id in self.treeview.selection():
+                item = self.treeview.item(id)
+                self.treeview.delete(id)
+                print(f"{item['values']}: DELETED")
+
+        self.treeview.bind('<<TreeviewSelect>>', func= itemSelect)
+        self.treeview.bind('<Delete>', itemDelete)
 
         #listbox
-        self.lstbox = tk.Listbox(master=self)
-        self.lstbox.pack()
+        #self.lstbox = tk.Listbox(master=self)
+        #self.lstbox.pack()
+
+    """ def __cercaEcr(self):
+        print(f"test {self.__codEcr.get()}")
+        for item in self.treeEln.get_children():
+            self.treeEln.delete(item)
+
+        self.__dtB.ApriConnessione()
+        dati, number = self.__dtB.CercaModelli(codEcr=self.__codEcr.get())
+        print (f"Abbiamo trovato: {number} records")
+        
+        for d in dati:
+            u = d[2] + ' ' + str(d[3])
+            self.treeEln.insert(parent='', index=0, values=(d[0], d[1], u))
+        self.__dtB.ChiudiConnessione() """
+    
+    def __cercaEcr(self):
+        print(f"test {self.__codEcr.get()}")
+        for item in self.treeEln.get_children():
+            self.treeEln.delete(item)
+
+        self.__dtB.ApriConnessione()
+        modelli:SchedaEcr = self.__dtB.CercaModelli(codEcr=self.__codEcr.get())
+        print (f"Abbiamo trovato: {len(modelli)} records")
+        
+        for m in modelli:
+            
+            self.treeEln.insert(parent='', index=0, 
+                                values=(m.codice, m.descrizione, m.logotipo, m.matricola))
+        
+        self.__dtB.ChiudiConnessione()
+
+    def __test1(self):
+        #window
+        self.title("Test N°1")
+        self.geometry("800x600")
+
+        #tk_variables
+        self.__codEcr = tk.StringVar(value="cerca")
+
+        #entry
+        self.entryRic = ttk.Entry(master=self, textvariable=self.__codEcr)
+        self.entryRic.pack(pady=15)
+
+        #button
+        self.btnRic = ttk.Button(master=self, text='Cerca', command= self.__cercaEcr)
+        self.btnRic.pack(pady=10)
+
+        #treeview
+        self.treeEln = ttk.Treeview(master=self, columns=('Codice', 'Descrizione','Logotipo', 'UltimaMatr'), show='headings', selectmode='browse')
+        self.treeEln.heading(column='Codice', text='Codice Ecr')
+        self.treeEln.heading(column='Descrizione', text='Descrizione ECR')
+        self.treeEln.heading(column='Logotipo', text='Logotipo')
+        self.treeEln.heading(column='UltimaMatr', text='Ultima Matricola')
+        #self.treeEln.insert(parent='', index=0, values=['LRIDEAL', 'ECR IDEAL', '2CIDE'])
+        self.treeEln.pack(pady=10)
+
+    

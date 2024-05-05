@@ -1,5 +1,6 @@
 import sqlite3
 from tkinter import messagebox
+from schedaVerbale import SchedaEcr
 import csv
 
 class DbConnect():
@@ -114,36 +115,9 @@ class DbConnect():
             IdProvv, StatusRec) VALUES (?, ?, ?, ?, ?, ?)"
         self.__InserimentoDati(pathCsvFile=pathCsvFile, query=query)
 
-    #Metodo pubblico per generare lista record dei modelli da verbalizzare
-    def SelectModelli(self, codEcr):
-        try:
-            query = f'''SELECT Ecr.CodEcr,
-                    Ecr.DescEcr,
-                    Logotipo.Logotipo,
-                    Logotipo.UltimaMatricola,
-                    Provvedimento.DescProvvedimento,
-                    Provvedimento.DataProv,
-                    Provvedimento.VarProvvedimento,
-                    Provvedimento.DataVariante,
-                    Azienda.DescAzienda,
-                    Delegato.Nome,
-                    Delegato.Cognome,
-                    strftime("%d-%m-%Y", date('now', 'localtime')) AS Data,
-                    time('now', 'localtime') AS Time,
-                    Ecr.IdEcr,
-                    Delegato.IdDeleg,
-                    Logotipo.IdLog
-                FROM Ecr,
-                    Logotipo,
-                    Provvedimento,
-                    Azienda,
-                    Delegato
-                WHERE Ecr.CodEcr LIKE '{codEcr}' AND 
-                    Ecr.IdLogotipo = Logotipo.IdLog AND
-                    Ecr.IdProvv = Provvedimento.IdProv AND 
-                    Azienda.IdAzi = Provvedimento.IdAzi AND 
-                    Delegato.IdAzi = Azienda.IdAzi;'''
-            
+    #Metodo privato per eseguire query al database
+    def __SelectQuery(self, query):
+        try:        
             dati =self.__connection.execute(query)
             number = len(self.__connection.execute(query).fetchall())
             #Ritorna il cursore con i record ed il numero di record (zero record che il cursore è vuoto)
@@ -151,6 +125,91 @@ class DbConnect():
         
         except sqlite3.Error as e:    
             messagebox.showerror(title="ERRORE", message=f"Abbiamo quest' errore {e} - {e.sqlite_errorcode}")
+
+    #Metodo pubblico per generare lista record dei modelli da verbalizzare
+    def SelectModelli(self, codEcr):
+        query = f'''SELECT Ecr.CodEcr,
+                Ecr.DescEcr,
+                Logotipo.Logotipo,
+                Logotipo.UltimaMatricola,
+                Provvedimento.DescProvvedimento,
+                Provvedimento.DataProv,
+                Provvedimento.VarProvvedimento,
+                Provvedimento.DataVariante,
+                Azienda.DescAzienda,
+                Delegato.Nome,
+                Delegato.Cognome,
+                strftime("%d-%m-%Y", date('now', 'localtime')) AS Data,
+                time('now', 'localtime') AS Time,
+                Ecr.IdEcr,
+                Delegato.IdDeleg,
+                Logotipo.IdLog
+            FROM Ecr,
+                Logotipo,
+                Provvedimento,
+                Azienda,
+                Delegato
+            WHERE Ecr.CodEcr LIKE '{codEcr}' AND 
+                Ecr.IdLogotipo = Logotipo.IdLog AND
+                Ecr.IdProvv = Provvedimento.IdProv AND 
+                Azienda.IdAzi = Provvedimento.IdAzi AND 
+                Delegato.IdAzi = Azienda.IdAzi;'''
+            
+        dati, number  = self.__SelectQuery(query)
+        return dati, number
+    
+    
+       
+    #Metodo pubblico per ricerca modelli
+    """ def CercaModelli(self, codEcr):
+        query = f''' SELECT Ecr.CodEcr,
+                Ecr.DescEcr,
+                Logotipo.Logotipo,
+                Logotipo.UltimaMatricola,
+                Provvedimento.DescProvvedimento,
+                Provvedimento.DataProv,
+                Provvedimento.VarProvvedimento,
+                Provvedimento.DataVariante,
+                Azienda.DescAzienda
+            FROM Ecr,
+                Logotipo,
+                Provvedimento,
+                Azienda
+            WHERE Ecr.CodEcr LIKE '%{codEcr}%' AND 
+                Ecr.IdLogotipo = Logotipo.IdLog AND
+                Ecr.IdProvv = Provvedimento.IdProv AND 
+                Azienda.IdAzi = Provvedimento.IdAzi;'''
+        
+        dati, number = self.__SelectQuery(query)
+        return dati, number """
+
+    def CercaModelli(self, codEcr):
+        query = f''' SELECT Ecr.CodEcr,
+                Ecr.DescEcr,
+                Logotipo.Logotipo,
+                Logotipo.UltimaMatricola,
+                Provvedimento.DescProvvedimento,
+                Provvedimento.DataProv,
+                Provvedimento.VarProvvedimento,
+                Provvedimento.DataVariante,
+                Azienda.DescAzienda
+            FROM Ecr,
+                Logotipo,
+                Provvedimento,
+                Azienda
+            WHERE Ecr.CodEcr LIKE '%{codEcr}%' AND 
+                Ecr.IdLogotipo = Logotipo.IdLog AND
+                Ecr.IdProvv = Provvedimento.IdProv AND 
+                Azienda.IdAzi = Provvedimento.IdAzi;'''
+        
+        dati, number = self.__SelectQuery(query)
+        schedes = []
+        for d in dati:
+            schedes.append(SchedaEcr(codice=d[0], descrizione=d[1], 
+                                     logotipo=d[2], matricola=d[3], 
+                                     descProv=d[4], dataProv=d[5], varProv=d[6],
+                                     dataVar=d[7], azienda=d[8]))
+        return schedes
 
     #Metodo pubblico per inserire record dei modelli verbalizzati nella tabella Scheda
     def InserScheda (self, task):
