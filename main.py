@@ -25,7 +25,7 @@ def mainFromFile (pathCsvFile):
                     dati, number = dtB.SelectModelli(d[0])
                     for r in dati:
                         print(r)
-                        modelli.append(Scheda(r[0],r[1], r[2], int(r[3]) + 1, r[4], r[5], r[6], r[7], r[8], int(d[1]), f"{r[9]} {r[10]}"))
+                        modelli.append(Scheda(r[0],r[1], r[2], int(r[3]) + 1, r[4], r[5], r[6], r[7], r[8], int(d[1]), f"{r[9]} {r[10]}", r[16]))
                         dtB.InserScheda((r[13], int(r[3]) + 1, int(r[3]) + int(d[1]), r[14], dt.now()))
                         dtB.UpdateMatricola((int(r[3]) + int(d[1]), r[15]))
 
@@ -48,6 +48,6 @@ def mainFromWindows ():
      root.mainloop()
 
 if __name__ == "__main__":
-    mainFromFile('data/elencoPunz.csv')
-    #mainFromWindows()
+    #mainFromFile('data/elencoPunz.csv')
+    mainFromWindows()
     

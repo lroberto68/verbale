@@ -157,9 +157,9 @@ class VerbPdf(FPDF):
     #metodo privato per layout header pdf
     def  __header_layout(self):
 
-        self.set_font(size=26, style="B")
+        self.set_font(size=20, style="B")
         self.set_line_width(0.75)
-        self.cell(w=95, h=30, txt="DITRON S.R.L.", border=True, align="C", new_x=XPos.RIGHT)
+        self.cell(w=95, h=30, txt="DITRONETWORK S.r.l.", border=True, align="C", new_x=XPos.RIGHT)
         self.set_font(size=13, style="B")
         self.set_fill_color(192, 192, 192)
         self.cell(w=80, h=6, txt="SISTEMA DI QUALITA'", fill=True, border=True, align="C", new_y=YPos.NEXT, new_x = XPos.LEFT)

@@ -143,7 +143,8 @@ class DbConnect():
                 time('now', 'localtime') AS Time,
                 Ecr.IdEcr,
                 Delegato.IdDeleg,
-                Logotipo.IdLog
+                Logotipo.IdLog,
+                Delegato.Marchio
             FROM Ecr,
                 Logotipo,
                 Provvedimento,

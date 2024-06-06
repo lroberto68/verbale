@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import W, ttk
 from dbConnect import DbConnect as db
 from schedaVerbale import Scheda, SchedaEcr
 from datetime import datetime as dt 
@@ -255,15 +255,16 @@ class MainWindow(tk.Tk):
         for m in modelli:
             
             self.treeEln.insert(parent='', index=0, 
-                                values=(m.codice, m.descrizione, m.logotipo, m.matricola))
+                                values=(m.codice, m.descrizione, m.logotipo, str(m.matricola).zfill(6)))
         
         self.__dtB.ChiudiConnessione()
 
     def __test1(self):
         #window
         self.title("Test N°1")
-        self.geometry("800x600")
-
+        self.geometry("1300x600")
+        self.resizable(False, False)
+        
         #tk_variables
         self.__codEcr = tk.StringVar(value="cerca")
 
@@ -276,12 +277,46 @@ class MainWindow(tk.Tk):
         self.btnRic.pack(pady=10)
 
         #treeview
-        self.treeEln = ttk.Treeview(master=self, columns=('Codice', 'Descrizione','Logotipo', 'UltimaMatr'), show='headings', selectmode='browse')
-        self.treeEln.heading(column='Codice', text='Codice Ecr')
-        self.treeEln.heading(column='Descrizione', text='Descrizione ECR')
-        self.treeEln.heading(column='Logotipo', text='Logotipo')
-        self.treeEln.heading(column='UltimaMatr', text='Ultima Matricola')
-        #self.treeEln.insert(parent='', index=0, values=['LRIDEAL', 'ECR IDEAL', '2CIDE'])
-        self.treeEln.pack(pady=10)
+        self.treeEln = ttk.Treeview(master=self, 
+                                    columns=('Codice', 'Descrizione','Logotipo', 'UltimaMatr'), 
+                                    show='headings', selectmode='browse')
+        self.treeEln.heading(column='Codice', text='Codice Ecr', anchor=W)
+        self.treeEln.heading(column='Descrizione', text='Descrizione ECR', anchor=W)
+        self.treeEln.heading(column='Logotipo', text='Logotipo', anchor=W)
+        self.treeEln.heading(column='UltimaMatr', text='Ultima Matricola', anchor=W)
+        self.treeEln.place(relx=0.05, rely=0.20, width=700, height=200)
+        #self.treeEln.pack()
+
+        self.treeEln.column(column='Codice', stretch=False, minwidth=100, width=100)
+        self.treeEln.column(column='Descrizione', stretch=False, minwidth=350, width=350)
+        self.treeEln.column(column='Logotipo', stretch=False, minwidth=75, width=75)
+        self.treeEln.column(column='UltimaMatr', stretch=False, minwidth=175, width=175)
+
+         #scrollbar
+        self.scrollX = tk.Scrollbar(master=self, orient=tk.HORIZONTAL)
+        self.scrollY = tk.Scrollbar(master=self, orient=tk.VERTICAL)
+        self.treeEln.configure(yscrollcommand=self.scrollY.set)
+        self.scrollY.configure(command=self.treeEln.yview)
+
+        #self.scrollX.place(relx=0.05, rely=0.85, width=700, height=22)
+        self.scrollY.place(relx=0.58, rely=0.20, width=22, height=200)
+
+    def __test2(self):
+        #window
+        self.title("Test N°2")
+        self.geometry("900x600")
+
+        #treeview
+        self.treeEln = ttk.Treeview(master=self, columns=('Codice', 'Descrizione','Logotipo', 'UltimaMatr'), show='headings')
+        self.treeEln.heading(column='Codice', text='Codice Ecr', anchor=W)
+        self.treeEln.heading(column='Descrizione', text='Descrizione ECR', anchor=W)
+        self.treeEln.heading(column='Logotipo', text='Logotipo', anchor=W)
+        self.treeEln.heading(column='UltimaMatr', text='Ultima Matricola', anchor=W)
+        self.treeEln.place(relx=0.05, rely=0.05, width=700, height=400)
+
+        self.treeEln.column(column='Codice', stretch=True, minwidth=25, width=100)
+        self.treeEln.column(column='Descrizione', stretch=False, minwidth=50, width=300)
+        self.treeEln.column(column='Logotipo', stretch=False, minwidth=25, width=100)
+        self.treeEln.column(column='UltimaMatr', stretch=False, minwidth=25, width=200)
 
     

@@ -42,12 +42,13 @@ class SchedaEcr():
 class Scheda(SchedaEcr):
 
     def __init__(self, codice, descrizione, logotipo, matricola, descProv, dataProv, varProv, 
-                 dataVar, azienda, qty, delegato):
+                 dataVar, azienda, qty, delegato, marchio):
         
         super().__init__(codice, descrizione, logotipo, matricola, descProv, dataProv, varProv, 
                          dataVar, azienda)
         self.__qty = qty
         self.__delegato = delegato
+        self.__marchio = marchio
     
     @property
     def qty(self):
@@ -56,3 +57,7 @@ class Scheda(SchedaEcr):
     @property
     def delegato(self):
         return self.__delegato
+    
+    @property
+    def marchio(self):
+        return self.__marchio
